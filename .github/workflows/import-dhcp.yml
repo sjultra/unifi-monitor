@@ -1,30 +1,20 @@
-name: Daily Unifi Monitor Run
+name: Import DHCP Configurations
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
     inputs:
-      mode:
-        description: 'Operation mode (read/write)'
-        required: true
-        default: 'read'
-        type: choice
-        options:
-          - read
-          - write
       environment:
-        description: 'Environment to run against'
+        description: 'Environment to import from'
         required: true
-        default: 'dev'
         type: choice
         options:
+          - all
           - dev
           - stage
           - prod
 
 jobs:
-  run-monitor:
+  import-dhcp:
     runs-on: ubuntu-latest
     
     steps:
@@ -39,19 +29,32 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
-        
-      - name: Run Unifi Monitor
+
+      - name: Fetch DHCP configurations
+        if: github.event.inputs.environment == 'all' || github.event.inputs.environment == 'dev'
         env:
           UNIFI_API_KEY_DEV: ${{ secrets.UNIFI_API_KEY_DEV }}
+        run: npm run test -- read dev
+
+      - name: Fetch DHCP configurations
+        if: github.event.inputs.environment == 'all' || github.event.inputs.environment == 'stage'
+        env:
           UNIFI_API_KEY_STAGE: ${{ secrets.UNIFI_API_KEY_STAGE }}
+        run: npm run test -- read stage
+
+      - name: Fetch DHCP configurations
+        if: github.event.inputs.environment == 'all' || github.event.inputs.environment == 'prod'
+        env:
           UNIFI_API_KEY_PROD: ${{ secrets.UNIFI_API_KEY_PROD }}
-        run: npm run test -- ${{ github.event.inputs.mode || 'read' }} ${{ github.event.inputs.environment || 'dev' }}
+        run: npm run test -- read prod
+        
+      - name: Import DHCP configurations
+        run: npm run import-dhcp
         
       - name: Commit and push changes
-        if: github.event.inputs.mode == 'read' || github.event_name == 'schedule'
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add dhcp-reservations-*.json src/config/dhcp.ts
-          git commit -m "Update DHCP configurations for ${{ github.event.inputs.environment || 'all' }} environments [skip ci]" || exit 0
+          git commit -m "Import DHCP configurations for ${{ github.event.inputs.environment }} environment(s) [skip ci]" || exit 0
           git push 

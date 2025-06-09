@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "test": "ts-node -r tsconfig-paths/register src/index.ts"
+    "test": "ts-node -r tsconfig-paths/register src/index.ts",
+    "import-dhcp": "ts-node -r tsconfig-paths/register scripts/import-dhcp-config.ts"
   },
   "author": "",
   "license": "ISC",
