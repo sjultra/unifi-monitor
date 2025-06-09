@@ -1,0 +1,36 @@
+name: Daily Unifi Monitor Run
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  run-monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run Unifi Monitor
+        env:
+          UNIFI_API_KEY: ${{ secrets.UNIFI_API_KEY }}
+        run: npm run test
+        
+      - name: Commit and push DHCP Reservations
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add dhcp-reservations.json
+          git commit -m "Update DHCP reservations [skip ci]" || exit 0
+          git push 
