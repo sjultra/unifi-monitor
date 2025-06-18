@@ -2,14 +2,24 @@
 
 This folder contains scripts for managing DHCP reservations on a UniFi OS device (UDM Pro, Cloud Key, etc.) using the local API and an API key.
 
+## Scripts
+- `unifi_DHCP_Sync.py`: Main script for listing, creating, updating, and syncing DHCP reservations.
+- `reservations.json`: Example or input file for DHCP reservations.
+- `requirements.txt`: Python dependencies for the scripts.
+
 ## Features
 - List current DHCP reservations
 - Create or update reservations from a JSON file
 - Sync reservations (add, update, and remove to match a JSON file)
+- Dry run support for safe testing
+- Multi-site support (specify site with `--site`)
 
 ## Requirements
 - Python 3.7+
-- `requests`, `python-dotenv`, `urllib3` (install with `pip install -r requirements.txt`)
+- Install dependencies with:
+  ```
+  pip install -r requirements.txt
+  ```
 - A UniFi OS API key (see below)
 
 ## Environment Variables
@@ -29,27 +39,27 @@ UNIFI_API_KEY=<your-api-key>
 
 ### List current DHCP reservations
 ```
-python unifi_export.py
+python unifi_DHCP_Sync.py
 ```
 
 ### Create reservations from a JSON file (legacy, only adds/updates)
 ```
-python unifi_export.py --create-from-json reservations.json
+python unifi_DHCP_Sync.py --create-from-json reservations.json
 ```
 
 ### Sync reservations from a JSON file (add, update, and remove to match file)
 ```
-python unifi_export.py --sync-from-json reservations.json
+python unifi_DHCP_Sync.py --sync-from-json reservations.json
 ```
 
 ### Dry run sync (show what would be done)
 ```
-python unifi_export.py --sync-from-json reservations.json --dry-run
+python unifi_DHCP_Sync.py --sync-from-json reservations.json --dry-run
 ```
 
 ### Specify a site (if not 'default')
 ```
-python unifi_export.py --site <site_name>
+python unifi_DHCP_Sync.py --site <site_name>
 ```
 
 ## Security
