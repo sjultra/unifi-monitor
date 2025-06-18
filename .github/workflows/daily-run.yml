@@ -3,16 +3,8 @@ name: Daily Unifi Monitor Run
 on:
   schedule:
     - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
     inputs:
-      mode:
-        description: 'Operation mode (read/write)'
-        required: true
-        default: 'read'
-        type: choice
-        options:
-          - read
-          - write
       environment:
         description: 'Environment to run against'
         required: true
@@ -26,32 +18,19 @@ on:
 jobs:
   run-monitor:
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
       - name: Install dependencies
         run: npm ci
-        
       - name: Run Unifi Monitor
         env:
           UNIFI_API_KEY_DEV: ${{ secrets.UNIFI_API_KEY_DEV }}
           UNIFI_API_KEY_STAGE: ${{ secrets.UNIFI_API_KEY_STAGE }}
           UNIFI_API_KEY_PROD: ${{ secrets.UNIFI_API_KEY_PROD }}
-        run: npm run test -- ${{ github.event.inputs.mode || 'read' }} ${{ github.event.inputs.environment || 'dev' }}
-        
-      - name: Commit and push changes
-        if: github.event.inputs.mode == 'read' || github.event_name == 'schedule'
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git add dhcp-reservations-*.json src/config/dhcp.ts
-          git commit -m "Update DHCP configurations for ${{ github.event.inputs.environment || 'all' }} environments [skip ci]" || exit 0
-          git push 
+        run: npm run test -- read ${{ github.event.inputs.environment || 'dev' }} 

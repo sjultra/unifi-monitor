@@ -1,0 +1,46 @@
+name: Manage DHCP Reservations
+
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: 'Site name (default: default)'
+        required: false
+        default: 'default'
+      json_file:
+        description: 'Path to reservations JSON file (relative to repo root)'
+        required: true
+        default: 'scripts/reservations.json'
+      mode:
+        description: 'Operation mode'
+        required: true
+        default: 'sync'
+        type: choice
+        options:
+          - sync
+          - create
+
+jobs:
+  import-dhcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+      - name: Run DHCP Reservation Management Script
+        env:
+          UNIFI_BASE_URL: ${{ secrets.UNIFI_BASE_URL }}
+          UNIFI_API_KEY: ${{ secrets.UNIFI_API_KEY }}
+        run: |
+          cd scripts
+          if [ "${{ github.event.inputs.mode }}" = "sync" ]; then
+            python unifi_DHCP_Sync.py --sync-from-json ${{ github.event.inputs.json_file }} --site ${{ github.event.inputs.site }} --no-confirm
+          else
+            python unifi_DHCP_Sync.py --create-from-json ${{ github.event.inputs.json_file }} --site ${{ github.event.inputs.site }}
+          fi 

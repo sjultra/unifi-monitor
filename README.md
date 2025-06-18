@@ -1,20 +1,14 @@
 # UniFi Monitor
 
-A TypeScript-based Infrastructure as Code (IaC) solution for monitoring and managing UniFi networks across multiple environments. This tool provides automated monitoring, configuration management, and synchronization between your UniFi networks and version control.
+A TypeScript-based Infrastructure as Code (IaC) solution for monitoring UniFi networks across multiple environments. This tool provides automated monitoring, device status reporting, and synchronization with version control.
 
 ## Features
 
 - 📊 **Network Monitoring**: Track device status, online/offline states, and network health
 - 📝 **Infrastructure as Code**: Store network configurations in TypeScript for version control
 - 🤖 **Automated Monitoring**: Daily checks of network configurations with GitHub Actions
-- 🔄 **Bidirectional Sync**: Import from UniFi and apply changes back to networks
 - 📈 **Change Tracking**: Track all network changes in git history
 - 🔒 **Secure**: API keys stored in GitHub Secrets
-
-### DHCP Management
-- 🔄 **Multi-Environment Support**: Manage DHCP reservations across dev, stage, and prod environments
-- 📋 **Reservation Tracking**: Monitor and manage static IP assignments
-- 🔄 **Automated Updates**: Keep DHCP configurations in sync across environments
 
 ## Prerequisites
 
@@ -58,23 +52,6 @@ export const environments = {
 };
 ```
 
-### DHCP Reservations
-
-Define your DHCP reservations in `src/config/dhcp.ts`:
-```typescript
-export const dhcpReservations = {
-    dev: [
-        {
-            mac: "00:11:22:33:44:55",
-            ip: "192.168.1.100",
-            hostname: "device-name",
-            description: "Optional description"
-        }
-    ],
-    // ... other environments
-};
-```
-
 ## Usage
 
 ### Local Development
@@ -86,24 +63,14 @@ export const dhcpReservations = {
    npm run test -- read prod   # For production environment
    ```
 
-2. Apply configurations:
-   ```bash
-   npm run test -- write dev   # Apply to development environment
-   ```
-
 ### GitHub Actions
 
-The project includes two GitHub Actions workflows:
+The project includes a GitHub Actions workflow:
 
-1. **Daily Monitor** (`.github/workflows/daily-run.yml`):
-   - Runs daily at midnight UTC
-   - Checks all environments
-   - Commits any changes to git
-
-2. **Import Configuration** (`.github/workflows/import-dhcp.yml`):
-   - Manual trigger
-   - Imports configurations from selected environment
-   - Updates TypeScript configuration
+- **Daily Monitor** (`.github/workflows/daily-run.yml`):
+  - Runs daily at midnight UTC
+  - Checks all environments
+  - Commits any changes to git
 
 ## GitHub Secrets Setup
 
