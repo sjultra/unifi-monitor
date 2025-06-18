@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import * as UnifiClient from "@/clients/unifi"
-import { dhcpReservations } from "@/config/dhcp"
 import { environments } from "@/config/environments"
 
 async function main() {
@@ -18,16 +17,10 @@ async function main() {
     if (mode === 'read') {
         console.log("Fetching device information...");
         await UnifiClient.getHosts(env)
-        
-        console.log("\nFetching DHCP reservations...");
-        await UnifiClient.getDHCPReservations(env)
-    } else if (mode === 'write') {
-        console.log("Updating DHCP reservations from configuration...");
-        await UnifiClient.updateDHCPReservations(env, dhcpReservations[envName] || [])
     } else {
-        console.error("Invalid mode. Use 'read' or 'write'");
+        console.error("Invalid mode. Only 'read' is supported after DHCP removal.");
         process.exit(1)
     }
 }
 
-main()
+main();

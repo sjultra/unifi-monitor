@@ -8,3 +8,6 @@
 
 # local env files
 .env
+
+# Python virtual environment
+venv/

@@ -1,0 +1,11 @@
+
+[
+    {
+      "name": "sjz-prod-ops-adm-01",
+      "hostname": "sjz-prod-ops-adm-01",
+      "mac_address": "d8:3a:dd:c4:cf:df",
+      "reserved_ip": "192.168.37.9",
+      "network_name": "N/A",
+      "last_seen": 1743044941
+    }
+  ]

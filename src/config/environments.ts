@@ -8,7 +8,7 @@ export interface UnifiEnvironment {
 export const environments: { [key: string]: UnifiEnvironment } = {
     dev: {
         name: "Development",
-        hostname: "dev-testing",
+        hostname: "Testing",
         apiKey: process.env.UNIFI_API_KEY_DEV || "",
         description: "Development environment for testing new configurations"
     },
