@@ -1,4 +1,7 @@
-name: Manage DHCP Reservations
+# Syncs DHCP reservations with the UniFi controller.
+# Runs on manual dispatch only.
+
+name: "[E-STALE] Manage DHCP Reservations"
 
 on:
   workflow_dispatch:
