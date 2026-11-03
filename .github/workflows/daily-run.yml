@@ -1,7 +1,4 @@
-# Runs the UniFi monitor (npm test read) for the selected environment.
-# Runs daily at 00:00 UTC or manual dispatch (disabled by inactivity).
-
-name: "[E-OFF] Run UniFi Monitor Daily"
+name: Daily Unifi Monitor Run
 
 on:
   schedule:
